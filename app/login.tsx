@@ -1,101 +1,220 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
-import { router } from "expo-router";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  SafeAreaView,
+} from "react-native";
+import { Stack, router } from "expo-router";
+import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
-export default function Login() {
+export default function LoginScreen() {
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = async () => {
+    if (!identifier.trim() || !password.trim()) {
+      Alert.alert("Validation Error", "Please fill in all fields");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://192.168.1.15:5000/api/auth/login", // Update with your actual endpoint
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier, password }),
+        }
+      );
+
+      let data: any = {};
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.log("JSON Parse Failed");
+      }
+
+      console.log("STATUS:", response.status);
+      console.log("DATA:", data);
+
+      if (response.ok) {
+        // Clear stack and go to home
+        router.replace("/(student)/home");
+        return;
+      }
+
+      // Unified Alert for errors (Matches your EmailScreen style)
+      Alert.alert(
+        "Login Failed",
+        data?.error || data?.message || "Invalid credentials"
+      );
+    } catch (error) {
+      console.log("NETWORK ERROR:", error);
+      Alert.alert("Network Error", "Backend not reachable");
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      
-      {/* Avatar Circle */}
-      <View style={styles.avatar} />
+    <SafeAreaView style={styles.container}>
+      <Stack.Screen options={{ headerShown: false }} />
 
-      {/* Title */}
-      <Text style={styles.title}>Your Wolio ID</Text>
-      <Text style={styles.subtitle}>
-        We’ve created your WOLIO ID — your learning identity.
-      </Text>
+      <View style={styles.content}>
+        {/* Logo - Matching your style */}
+        <Image
+          source={require("../assets/wolio/logo.png")}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
-      {/* Name */}
-      <Text style={styles.label}>Name</Text>
-      <TextInput style={styles.input} placeholder="" />
+        {/* Heading */}
+        <Text style={styles.title}>Welcome Back</Text>
+        <Text style={styles.subtitle}>
+          Log in to continue your learning journey
+        </Text>
 
-      {/* Class */}
-      <Text style={styles.label}>Class / Grade</Text>
-      <TextInput style={styles.input} placeholder="" />
+        {/* Wolio ID / Email Input */}
+        <TextInput
+          placeholder="Wolio Id / Email Id"
+          value={identifier}
+          onChangeText={setIdentifier}
+          style={styles.input}
+          autoCapitalize="none"
+        />
 
-      {/* Password */}
-      <Text style={styles.label}>Board</Text>
-      <TextInput style={styles.input} secureTextEntry />
+        {/* Password Input with Eye Icon */}
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            style={[styles.input, { marginBottom: 0, flex: 1 }]}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Ionicons
+              name={showPassword ? "eye-outline" : "eye-off-outline"}
+              size={20}
+              color="#9CA3AF"
+            />
+          </TouchableOpacity>
+        </View>
 
-      {/* Button */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push("/success")}
-      >
-        <Text style={styles.buttonText}>Start Learning</Text>
-      </TouchableOpacity>
+        {/* Forgot Password Link */}
+        <TouchableOpacity 
+          onPress={() => router.push("/forgot-password")}
+          style={styles.forgotContainer}
+        >
+          <Text style={styles.forgotText}>Forgot Password?</Text>
+        </TouchableOpacity>
 
-      {/* Privacy */}
-      <Text style={styles.privacy}>
-        We respect your privacy. No spam, ever
-      </Text>
+        {/* Login Button */}
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Log In</Text>
+        </TouchableOpacity>
 
-    </View>
+        {/* Footer Link to Sign Up */}
+        <View style={styles.signUpRow}>
+          <Text style={styles.signUpLabel}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => router.push("/email")}>
+            <Text style={styles.signUpLink}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F2F3F5",
-    paddingHorizontal: 24,
+    backgroundColor: "#E5E7EB", // Matches your EmailScreen bg
+  },
+  content: {
+    flex: 1,
+    padding: 24,
     justifyContent: "center",
   },
-  avatar: {
+  logo: {
     width: 90,
     height: 90,
-    borderRadius: 45,
-    backgroundColor: "#C9CCD1",
     alignSelf: "center",
     marginBottom: 20,
   },
   title: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: "600",
     textAlign: "center",
+    marginBottom: 8,
+    color: "#000",
   },
   subtitle: {
-    fontSize: 14,
-    color: "#6B7280",
     textAlign: "center",
-    marginBottom: 30,
-    marginTop: 8,
-  },
-  label: {
-    fontSize: 14,
     color: "#6B7280",
-    marginBottom: 6,
-    marginTop: 14,
+    marginBottom: 32,
   },
   input: {
-    backgroundColor: "#E5E7EB",
+    width: "100%",
+    height: 50,
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
-    padding: 14,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
-  button: {
-    backgroundColor: "#7C7C7C",
-    borderRadius: 14,
-    padding: 16,
-    marginTop: 28,
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 16,
   },
-  buttonText: {
-    color: "#fff",
-    textAlign: "center",
+  eyeIcon: {
+    position: "absolute",
+    right: 16,
+  },
+  forgotContainer: {
+    alignSelf: "flex-end",
+    marginBottom: 24,
+  },
+  forgotText: {
+    color: "#2563EB",
+    fontSize: 13,
     fontWeight: "600",
   },
-  privacy: {
-    fontSize: 12,
-    color: "#9CA3AF",
-    textAlign: "center",
-    marginTop: 14,
+  button: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#3B82F6",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  signUpRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  signUpLabel: {
+    color: "#6B7280",
+    fontSize: 13,
+  },
+  signUpLink: {
+    color: "#2563EB",
+    fontSize: 13,
+    fontWeight: "600",
   },
 });

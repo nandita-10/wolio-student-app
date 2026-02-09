@@ -14,36 +14,58 @@ import { Alert } from "react-native";
 export default function EmailScreen() {
   const [email, setEmail] = useState("");
 
-  const handleSendOtp = async () => {
-  if (!email) {
-    Alert.alert("Error", "Please enter email");
+const handleSendOtp = async () => {
+  if (!email.trim()) {
+    Alert.alert("Validation Error", "Please enter email");
     return;
   }
 
   try {
-    const response = await fetch("http://localhost:5000/api/auth/send-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
+    const response = await fetch(
+      "http://192.168.1.15:5000/api/auth/send-otp",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }
+    );
 
-    const data = await response.json();
+let data: any = {};
+try {
+  data = await response.json();
+} catch (e) {
+  console.log("JSON Parse Failed");
+}
+
+Alert.alert(
+  "Error",
+  data?.error || data?.message || "Something went wrong"
+);
+
+
+    console.log("STATUS:", response.status);
+    console.log("DATA:", data);
 
     if (response.ok) {
       router.push({
         pathname: "/otp",
         params: { email },
       });
-    } else {
-      Alert.alert("Failed", data.message || "Something went wrong");
+      return;
     }
+
+    // ONE unified alert
+    Alert.alert(
+      "Error",
+      data.error || data.message || "Something went wrong"
+    );
+
   } catch (error) {
-    Alert.alert("Error", "Server not reachable");
-    console.log(error);
+    console.log("NETWORK ERROR:", error);
+    Alert.alert("Network Error", "Backend not reachable");
   }
 };
+
 
 
   return (
@@ -98,6 +120,14 @@ export default function EmailScreen() {
         <Text style={styles.footer}>
           We'll send you a verification code to confirm your email
         </Text>
+
+        <View style={styles.loginRow}>
+  <Text style={styles.loginText}>Are you an existing user? </Text>
+  <TouchableOpacity onPress={() => router.push("/login")}>
+    <Text style={styles.loginLink}>Login</Text>
+  </TouchableOpacity>
+</View>
+
 
       </View>
     </>
@@ -192,4 +222,22 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     textAlign: "center",
   },
+
+  loginRow: {
+  flexDirection: "row",
+  justifyContent: "center",
+  marginTop: 16,
+},
+
+loginText: {
+  color: "#6B7280",
+  fontSize: 13,
+},
+
+loginLink: {
+  color: "#2563EB",
+  fontSize: 13,
+  fontWeight: "600",
+},
+
 });

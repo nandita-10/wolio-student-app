@@ -9,6 +9,8 @@ import {
 import { Stack, router } from "expo-router";
 import { useState, useRef } from "react";
 import { useLocalSearchParams } from "expo-router";
+import { Alert } from "react-native";
+
 
 export default function OtpScreen() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -24,6 +26,46 @@ export default function OtpScreen() {
     inputs.current[index + 1]?.focus();
   }
 };
+
+const handleVerifyOtp = async () => {
+  const otp = code.join("");
+
+  if (otp.length !== 6) {
+    Alert.alert("Error", "Please enter 6 digit OTP");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/verify-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        otp,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+  
+
+  router.push({
+    pathname: "/set-password",
+    params: { wolioId: data.wolioId },
+  });
+}
+ else {
+      Alert.alert("Invalid OTP", data.message || "Try again");
+    }
+  } catch (error) {
+    console.log(error);
+    Alert.alert("Error", "Server not reachable");
+  }
+};
+
 
 
   return (
@@ -78,7 +120,8 @@ export default function OtpScreen() {
         {/* Verify Button */}
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/email-success")}
+          onPress={handleVerifyOtp}
+
         >
           <Text style={styles.buttonText}>Verify</Text>
         </TouchableOpacity>

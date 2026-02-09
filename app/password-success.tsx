@@ -6,8 +6,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Stack, router } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
+
 
 export default function PasswordSuccess() {
+    const { wolioId } = useLocalSearchParams();
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
@@ -37,7 +41,13 @@ export default function PasswordSuccess() {
         {/* Continue Button */}
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/login")} 
+          onPress={() =>
+  router.push({
+    pathname: "/profile",
+    params: { wolioId },
+  })
+}
+ 
         >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>

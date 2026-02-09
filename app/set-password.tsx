@@ -8,6 +8,9 @@ import {
 import { Stack, router } from "expo-router";
 import { useState } from "react";
 import { Image } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import { Alert } from "react-native";
+
 
 
 export default function SetPassword() {
@@ -21,6 +24,48 @@ export default function SetPassword() {
   const hasNumber = /[0-9]/.test(password);
 
   const isValid = hasLength && hasUpper && hasNumber && password === confirm;
+  const { wolioId } = useLocalSearchParams();
+
+
+  const handleSetPassword = async () => {
+  if (!isValid) {
+    Alert.alert("Error", "Password does not meet requirements");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/auth/set-password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          wolioId,
+          password,
+          confirmpassword: confirm,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      router.push({
+  pathname: "/password-success",
+  params: { wolioId },
+});
+
+    } else {
+      Alert.alert("Error", data.message || "Failed");
+    }
+  } catch (error) {
+    console.log(error);
+    Alert.alert("Server Error", "Try again later");
+  }
+};
+
 
   return (
     <>
@@ -92,12 +137,14 @@ export default function SetPassword() {
         </View>
 
         {/* Button */}
-        <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => router.push("/password-success")} 
-                >
-                  <Text style={styles.buttonText}>Continue</Text>
-                </TouchableOpacity>
+       <TouchableOpacity
+  style={[styles.button, isValid && styles.buttonActive]}
+  disabled={!isValid}
+  onPress={handleSetPassword}
+>
+  <Text style={styles.buttonText}>Continue</Text>
+</TouchableOpacity>
+
 
       </View>
     </>
