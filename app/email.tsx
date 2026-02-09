@@ -17,15 +17,24 @@ export default function EmailScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.container}>
-        
-        {/* Logo */}
-        <View >
-          <Image
-            source={require("../assets/wolio/logo.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+
+        {/* Progress Row */}
+        <View style={styles.progressRow}>
+          <View style={[styles.progressBar, styles.activeBar]} />
+          <View style={styles.progressBar} />
+          <View style={styles.progressBar} />
+          
+
+          <Text style={styles.stepText}>Step 1 of 3</Text>
         </View>
+
+        {/* Logo Circle */}
+        <Image
+  source={require("../assets/wolio/logo.png")}
+  style={styles.logo}
+  resizeMode="contain"
+/>
+
 
         {/* Heading */}
         <Text style={styles.title}>Your Wolio ID</Text>
@@ -45,7 +54,7 @@ export default function EmailScreen() {
         {/* Button */}
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/login")} // later OTP
+          onPress={() => router.push("/otp")}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
@@ -65,20 +74,48 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#E5E7EB",
     padding: 24,
+  },
+
+  /* Progress */
+  progressRow: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    marginTop: 10,
+    marginBottom: 40,
+  },
+
+  progressBar: {
+    width: 40,
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: "#D1D5DB",
+    marginRight: 8,
+  },
+
+  activeBar: {
+    backgroundColor: "#4F46E5",
+  },
+
+  stepText: {
+    marginLeft: "auto",
+    color: "#6B7280",
+    fontSize: 12,
   },
 
   
 
   logo: {
-    width: 70,
-    height: 70,
-  },
+  width: 90,
+  height: 90,
+  alignSelf: "center",
+  marginBottom: 20,
+},
+
 
   title: {
     fontSize: 22,
     fontWeight: "600",
+    textAlign: "center",
     marginBottom: 8,
   },
 

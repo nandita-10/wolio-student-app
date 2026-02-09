@@ -23,7 +23,7 @@ export default function Login() {
       <TextInput style={styles.input} placeholder="" />
 
       {/* Password */}
-      <Text style={styles.label}>Wolio ID Password</Text>
+      <Text style={styles.label}>Board</Text>
       <TextInput style={styles.input} secureTextEntry />
 
       {/* Button */}
