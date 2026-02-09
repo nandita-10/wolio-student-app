@@ -8,10 +8,12 @@ import {
 } from "react-native";
 import { Stack, router } from "expo-router";
 import { useState, useRef } from "react";
+import { useLocalSearchParams } from "expo-router";
 
 export default function OtpScreen() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputs = useRef<Array<TextInput | null>>([]);
+  const { email } = useLocalSearchParams();
 
   const handleChange = (text: string, index: number) => {
   const newCode = [...code];
@@ -53,7 +55,7 @@ export default function OtpScreen() {
         <Text style={styles.subtitle}>
           Enter the 6-digit code we sent to
         </Text>
-        <Text style={styles.email}>student@example.com</Text>
+        <Text style={styles.email}>{email}</Text>
 
         {/* OTP Boxes */}
         <View style={styles.otpRow}>

@@ -8,9 +8,43 @@ import {
 } from "react-native";
 import { Stack, router } from "expo-router";
 import { useState } from "react";
+import { Alert } from "react-native";
+
 
 export default function EmailScreen() {
   const [email, setEmail] = useState("");
+
+  const handleSendOtp = async () => {
+  if (!email) {
+    Alert.alert("Error", "Please enter email");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/send-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      router.push({
+        pathname: "/otp",
+        params: { email },
+      });
+    } else {
+      Alert.alert("Failed", data.message || "Something went wrong");
+    }
+  } catch (error) {
+    Alert.alert("Error", "Server not reachable");
+    console.log(error);
+  }
+};
+
 
   return (
     <>
@@ -54,7 +88,8 @@ export default function EmailScreen() {
         {/* Button */}
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/otp")}
+          onPress={handleSendOtp}
+
         >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
