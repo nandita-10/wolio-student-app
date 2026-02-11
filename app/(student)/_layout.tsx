@@ -6,21 +6,16 @@ export default function StudentLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: true,
         tabBarStyle: {
-          height: 70,
-          paddingBottom: 10,
-          paddingTop: 8,
-          backgroundColor: "#F9FAFB",
-          borderTopWidth: 0,
-          elevation: 10,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          marginTop: 2,
+          height: 65,
+          paddingBottom: 8,
         },
         tabBarActiveTintColor: "#2563EB",
         tabBarInactiveTintColor: "#9CA3AF",
+        tabBarLabelStyle: {
+          fontSize: 12,
+          marginTop: 4,
+        },
       }}
     >
       <Tabs.Screen
@@ -37,7 +32,7 @@ export default function StudentLayout() {
         name="library"
         options={{
           title: "Library",
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="book-outline" size={22} color={color} />
           ),
         }}
@@ -47,7 +42,7 @@ export default function StudentLayout() {
         name="explore"
         options={{
           title: "Explore",
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="compass-outline" size={22} color={color} />
           ),
         }}
@@ -57,7 +52,7 @@ export default function StudentLayout() {
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="person-outline" size={22} color={color} />
           ),
         }}
