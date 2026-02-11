@@ -9,7 +9,7 @@ import { Stack, router } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 
 
-export default function PasswordSuccess() {
+export default function ResetPasswordSuccess() {
     const { wolioId } = useLocalSearchParams();
 
   return (
@@ -43,7 +43,7 @@ export default function PasswordSuccess() {
           style={styles.button}
           onPress={() =>
   router.push({
-    pathname: "/profile",
+    pathname: "/login",
     params: { wolioId },
   })
 }

@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
 
   bar: {
     width: "100%",
-    backgroundColor: "#6B7280",
+    backgroundColor: "#6D8B74",
     borderRadius: 6,
   },
 });

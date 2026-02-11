@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Stack, router } from "expo-router";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Alert } from "react-native";
 
@@ -16,6 +16,24 @@ export default function OtpScreen() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputs = useRef<Array<TextInput | null>>([]);
   const { email } = useLocalSearchParams();
+  const [timer, setTimer] = useState(0);
+const [resentSuccess, setResentSuccess] = useState(false);
+
+useEffect(() => {
+  let interval: ReturnType<typeof setInterval>;
+
+  if (timer > 0) {
+    interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+  }
+
+  return () => {
+    if (interval) clearInterval(interval);
+  };
+}, [timer]);
+
+
 
   const handleChange = (text: string, index: number) => {
   const newCode = [...code];
@@ -65,6 +83,39 @@ const handleVerifyOtp = async () => {
     Alert.alert("Error", "Server not reachable");
   }
 };
+
+const handleResendOtp = async () => {
+  if (timer > 0) return; // prevent spam
+
+  try {
+    const response = await fetch(
+      "http://192.168.1.15:5000/api/auth/resend-otp",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setCode(["", "", "", "", "", ""]);
+      inputs.current[0]?.focus();
+
+      setResentSuccess(true); // show tick
+      setTimer(30); // start cooldown
+
+      setTimeout(() => setResentSuccess(false), 2000); // hide tick
+    } else {
+      Alert.alert("Error", data.message || "Failed to resend OTP");
+    }
+  } catch (error) {
+    Alert.alert("Network Error", "Server not reachable");
+  }
+};
+
+
 
 
 
@@ -128,9 +179,22 @@ const handleVerifyOtp = async () => {
 
         {/* Resend */}
         <Text style={styles.smallText}>Didn't receive the code?</Text>
-        <TouchableOpacity>
-          <Text style={styles.resend}>Resend Code</Text>
-        </TouchableOpacity>
+       <View style={{ alignItems: "center", marginTop: 8 }}>
+  <TouchableOpacity
+    onPress={handleResendOtp}
+    disabled={timer > 0}
+  >
+    <Text style={[styles.resend, timer > 0 && { color: "#9CA3AF" }]}>
+      {timer > 0 ? `Resend Code (${timer}s)` : "Resend Code"}
+    </Text>
+  </TouchableOpacity>
+
+  {resentSuccess && (
+    <Text style={{ color: "green", marginTop: 4 }}>✔ OTP Sent</Text>
+  )}
+</View>
+
+
 
       <TouchableOpacity onPress={() => router.back()}>
   <Text style={styles.changeEmail}>Change email address</Text>
@@ -165,7 +229,7 @@ const styles = StyleSheet.create({
   },
 
   activeBar: {
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#6D8B74",
   },
 
   stepText: {
@@ -221,7 +285,7 @@ const styles = StyleSheet.create({
 
   button: {
     height: 50,
-    backgroundColor: "#3B82F6",
+    backgroundColor: "#6D8B74",
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",

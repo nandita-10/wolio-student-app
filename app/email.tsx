@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
 
   activeBar: {
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#6D8B74",
   },
 
   stepText: {
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     height: 50,
-    backgroundColor: "#3B82F6",
+    backgroundColor: "#6D8B74",
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",

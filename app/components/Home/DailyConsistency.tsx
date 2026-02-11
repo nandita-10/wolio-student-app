@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   },
 
   activeDot: {
-    backgroundColor: "#4F46E5",
+    backgroundColor: "#6D8B74",
   },
 
   inactiveDot: {

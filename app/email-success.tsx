@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "#1D4ED8",
+    backgroundColor: "#6D8B74",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     height: 52,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#6D8B74",
     borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",

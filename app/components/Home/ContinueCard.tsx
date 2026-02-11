@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   fill: {
     width: "65%",
     height: "100%",
-    backgroundColor: "#6B7280",
+    backgroundColor: "#6D8B74",
     borderRadius: 8,
   },
 
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#5F6F65", // green-grey like design
+    backgroundColor: "#6D8B74", // green-grey like design
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: "center",

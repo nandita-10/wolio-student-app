@@ -13,7 +13,7 @@ import { Alert } from "react-native";
 
 
 
-export default function SetPassword() {
+export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -24,10 +24,9 @@ export default function SetPassword() {
   const hasNumber = /[0-9]/.test(password);
 
   const isValid = hasLength && hasUpper && hasNumber && password === confirm;
-  const { wolioId } = useLocalSearchParams();
+  const { token } = useLocalSearchParams();
 
-
-  const handleSetPassword = async () => {
+const handleSetPassword = async () => {
   if (!isValid) {
     Alert.alert("Error", "Password does not meet requirements");
     return;
@@ -35,14 +34,14 @@ export default function SetPassword() {
 
   try {
     const response = await fetch(
-      "http://localhost:5000/api/auth/set-password",
+      "http://192.168.1.15:5000/api/auth/reset-password/confirm",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          wolioId,
+          token,
           password,
           confirmpassword: confirm,
         }),
@@ -52,11 +51,10 @@ export default function SetPassword() {
     const data = await response.json();
 
     if (response.ok) {
-      router.push({
-  pathname: "/password-success",
-  params: { wolioId },
-});
-
+      // small delay for smooth UX
+      setTimeout(() => {
+        router.replace("/reset-password-success");
+      }, 500);
     } else {
       Alert.alert("Error", data.message || "Failed");
     }
@@ -67,19 +65,15 @@ export default function SetPassword() {
 };
 
 
+
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.container}>
 
-        {/* Progress */}
-        <View style={styles.progressRow}>
-          <View style={[styles.progressBar, styles.activeBar]} />
-          <View style={[styles.progressBar, styles.activeBar]} />
-          <View style={styles.progressBar} />
-          <Text style={styles.stepText}>Step 2 of 3</Text>
-        </View>
+       
 
         {/* Logo */}
         <Image
@@ -172,9 +166,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 
-  activeBar: {
-    backgroundColor: "#6D8B74",
-  },
+
 
   stepText: {
     marginLeft: "auto",
