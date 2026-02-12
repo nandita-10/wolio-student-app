@@ -1,4 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+
 
 export default function ContinueCard() {
   return (
@@ -22,9 +24,17 @@ export default function ContinueCard() {
       </View>
 
       {/* Button */}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Continue Learning →</Text>
-      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={0.8}>
+  <LinearGradient
+    colors={["#C27AFF", "#AD46FF", "#2B7FFF"]}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 1, y: 1 }}
+    style={styles.button}
+  >
+    <Text style={styles.buttonText}>Continue Learning →</Text>
+  </LinearGradient>
+</TouchableOpacity>
+
     </View>
   );
 }
@@ -64,7 +74,7 @@ const styles = StyleSheet.create({
   fill: {
     width: "65%",
     height: "100%",
-    backgroundColor: "#6D8B74",
+    backgroundColor: "#BE70FE",
     borderRadius: 8,
   },
 
@@ -74,12 +84,17 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
-  button: {
-    backgroundColor: "#6D8B74", // green-grey like design
-    paddingVertical: 14,
-    borderRadius: 14,
-    alignItems: "center",
-  },
+ button: {
+  paddingVertical: 14,
+  borderRadius: 14,
+  alignItems: "center",
+  shadowColor: "#AD46FF",
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.4,
+  shadowRadius: 12,
+  elevation: 8,
+},
+
 
   buttonText: {
     color: "#FFF",
